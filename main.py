@@ -7,7 +7,7 @@ import random
 
 # Load API key from environment variables
 load_dotenv()
-os.environ["GOOGLE_API_KEY"] = "AIzaSyARy5-aVDONQ4sxhJvAVV4P8tvMu7wCbEs"
+os.environ["GOOGLE_API_KEY"] = "Your_Google_Api_key"
 genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 
 # Model setup
