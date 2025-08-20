@@ -63,7 +63,7 @@ with tab1:
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 
----
+
 # --- Tab 2: Smart Tour Chatbot ---
 with tab2:
     st.header("💬 Ask the Virtual Guide")
