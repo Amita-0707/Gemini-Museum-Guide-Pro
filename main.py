@@ -8,7 +8,7 @@ from google.api_core.exceptions import ResourceExhausted
 
 # For voice recognition
 import speech_recognition as sr
-import subprocess
+from mic_recorder_streamlit import mic_recorder
 
 # Load environment variables from .env file (for local testing)
 load_dotenv()
@@ -87,40 +87,40 @@ with tab2:
 # --- Tab 3: Voice Guide ---
 with tab3:
     st.header("🗣️ Talk to the Guide")
-    st.markdown("Click the button and speak your question. The app will convert your speech to text and get a response.")
+    st.markdown("Click the mic and speak your question.")
     
-    # Check if we have a microphone
-    if not sr.Microphone:
-        st.error("No microphone detected. Please ensure a microphone is connected.")
-    else:
-        if st.button("🎙️ Start Speaking"):
-            recognizer = sr.Recognizer()
-            with st.spinner("Listening..."):
-                try:
-                    with sr.Microphone() as source:
-                        # You may need to adjust the microphone settings
-                        recognizer.adjust_for_ambient_noise(source, duration=1) 
-                        audio_data = recognizer.listen(source, timeout=5)
-                        st.info("Recognizing your speech...")
-                        # Use Google's Web Speech API for recognition
-                        voice_query = recognizer.recognize_google(audio_data)
-                        st.markdown(f"**You said:** *{voice_query}*")
+    # Use the mic_recorder component to record audio
+    audio_bytes = mic_recorder(start_prompt="🎙️ Start Speaking", stop_prompt="⏹️ Stop Recording")
 
-                        with st.spinner("Thinking..."):
-                            response = chat.send_message(voice_query, stream=True)
-                            full_reply = ""
-                            for chunk in response:
-                                st.write(chunk.text)
-                                full_reply += chunk.text + " "
-                            st.session_state["chat_history"].append(("You (Voice)", voice_query))
-                            st.session_state["chat_history"].append(("Guide", full_reply))
+    if audio_bytes:
+        recognizer = sr.Recognizer()
+        
+        # Save the audio bytes to a temporary file
+        with open("audio.wav", "wb") as f:
+            f.write(audio_bytes)
 
-                except sr.UnknownValueError:
-                    st.error("Could not understand audio. Please try speaking more clearly.")
-                except sr.RequestError as e:
-                    st.error(f"Speech recognition service error: {e}")
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
+        with st.spinner("Recognizing your speech..."):
+            try:
+                with sr.AudioFile("audio.wav") as source:
+                    audio_data = recognizer.record(source)
+                    voice_query = recognizer.recognize_google(audio_data)
+                    st.markdown(f"**You said:** *{voice_query}*")
+
+                    with st.spinner("Thinking..."):
+                        response = chat.send_message(voice_query, stream=True)
+                        full_reply = ""
+                        for chunk in response:
+                            st.write(chunk.text)
+                            full_reply += chunk.text + " "
+                        st.session_state["chat_history"].append(("You (Voice)", voice_query))
+                        st.session_state["chat_history"].append(("Guide", full_reply))
+
+            except sr.UnknownValueError:
+                st.error("Could not understand audio. Please try speaking more clearly.")
+            except sr.RequestError as e:
+                st.error(f"Speech recognition service error: {e}")
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
 
 # --- Tab 4: Cultural Fun Fact ---
 with tab4:
