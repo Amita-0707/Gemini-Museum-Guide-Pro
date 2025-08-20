@@ -8,7 +8,7 @@ from google.api_core.exceptions import ResourceExhausted
 
 # For voice recognition
 import speech_recognition as sr
-from mic_recorder_streamlit import mic_recorder
+from streamlit_mic_recorder import mic_recorder
 
 # Load environment variables from .env file (for local testing)
 load_dotenv()
