@@ -4,4 +4,4 @@ Pillow
 google-generativeai
 google-api-core
 SpeechRecognition
-streamlit-mic-recorder
+mic-recorder-streamlit
