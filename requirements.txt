@@ -1,4 +1,7 @@
-python-dotenv
 streamlit
+python-dotenv
+Pillow
 google-generativeai
-pillow
+google-api-core
+SpeechRecognition
+PyAudio
