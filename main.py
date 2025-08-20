@@ -1,3 +1,4 @@
+# main.py
 import os
 import streamlit as st
 from dotenv import load_dotenv
@@ -5,20 +6,22 @@ from PIL import Image
 import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 
-# Load environment variables from .env file
+# Load environment variables from .env file (for local testing)
 load_dotenv()
 
+# The API key is now loaded securely from Streamlit secrets
+# Streamlit provides a dictionary-like object for secrets
+try:
+    gemini_api_key = st.secrets["GOOGLE_API_KEY"]
+    genai.configure(api_key=gemini_api_key)
+except KeyError:
+    st.error("API key not found. Please set 'GOOGLE_API_KEY' in your Streamlit secrets.")
+    st.stop() # Stop the app if the key is not found
 
-os.environ["GOOGLE_API_KEY"] = "Your_Google_Api_key"
-genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
-
-# Set the environment variable to point to your service account key file
-# Make sure you have downloaded and saved the JSON file as "chatbot.json"
-# in the same directory as your main.py file.
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "chatbot.json"
-
-# The genai library will automatically find and use the credentials from the environment variable.
-genai.configure()
+# The following lines are removed or commented out:
+# os.environ["GOOGLE_API_KEY"] = "Your_Google_Api_key"
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "chatbot.json"
+# genai.configure() # This line is redundant after configuring the key above
 
 # Model setup
 MODEL_NAME = "gemini-1.5-flash-latest"
@@ -26,7 +29,7 @@ vision_model = genai.GenerativeModel(MODEL_NAME)
 chat_model = genai.GenerativeModel(MODEL_NAME)
 chat = chat_model.start_chat(history=[])
 
-# Streamlit config
+# Rest of your code... (the tabs, headers, etc. are correct)
 st.set_page_config(page_title="Gemini Museum Guide Pro", layout="wide")
 st.title("🏛️ Gemini Museum Guide Pro")
 st.caption("Step into the past with AI as your museum guide.")
@@ -51,7 +54,6 @@ with tab1:
         if st.button("🔍 Analyze Artifact"):
             with st.spinner("Gemini is analyzing..."):
                 try:
-                    # Use the vision model for image analysis
                     response = vision_model.generate_content([image_prompt, image]) if image_prompt else vision_model.generate_content(image)
                     st.success("Here's what Gemini says:")
                     st.write(response.text)
