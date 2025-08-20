@@ -85,7 +85,7 @@ with tab2:
             except Exception as e:
                 st.error(f"An error occurred: {e}")
 
----
+
 # --- Tab 3: Voice Guide ---
 with tab3:
     st.header("🗣️ Talk to the Guide")
@@ -124,7 +124,7 @@ with tab3:
             except Exception as e:
                 st.error(f"An error occurred: {e}")
 
----
+
 # --- Tab 4: Cultural Fun Fact ---
 with tab4:
     st.header("🎲 Fun Fact Generator")
@@ -155,7 +155,7 @@ with tab4:
                     st.error(f"An error occurred: {e}")
                     break
 
----
+
 # --- Tab 5: Tour Log ---
 with tab5:
     st.header("🗂️ Museum Tour Log")
