@@ -90,13 +90,14 @@ with tab2:
 with tab3:
     st.header("🗣️ Talk to the Guide")
     st.markdown("Click the mic and speak your question.")
-
+    
     # Use the mic_recorder component to record audio
     audio_bytes = mic_recorder(start_prompt="🎙️ Start Speaking", stop_prompt="⏹️ Stop Recording")
 
+    # Only run the recognition and generation logic if audio_bytes is not None
     if audio_bytes:
         recognizer = sr.Recognizer()
-
+        
         # Save the audio bytes to a temporary file
         with open("audio.wav", "wb") as f:
             f.write(audio_bytes)
