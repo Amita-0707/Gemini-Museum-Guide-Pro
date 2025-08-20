@@ -90,13 +90,13 @@ with tab2:
 with tab3:
     st.header("🗣️ Talk to the Guide")
     st.markdown("Click the mic and speak your question.")
-    
+
     # Use the mic_recorder component to record audio
     audio_bytes = mic_recorder(start_prompt="🎙️ Start Speaking", stop_prompt="⏹️ Stop Recording")
 
     if audio_bytes:
         recognizer = sr.Recognizer()
-        
+
         # Save the audio bytes to a temporary file
         with open("audio.wav", "wb") as f:
             f.write(audio_bytes)
@@ -123,7 +123,6 @@ with tab3:
                 st.error(f"Speech recognition service error: {e}")
             except Exception as e:
                 st.error(f"An error occurred: {e}")
-
 
 # --- Tab 4: Cultural Fun Fact ---
 with tab4:
